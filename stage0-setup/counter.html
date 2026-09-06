@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>打卡计数</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0a0e17;
+      color: #e8f0ff;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+    .panel {
+      text-align: center;
+      padding: 48px 64px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(79, 199, 255, .25);
+      box-shadow: 0 0 40px rgba(79, 199, 255, .12);
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      font-weight: normal;
+      letter-spacing: 8px;
+      color: #7fdbff;
+      text-transform: uppercase;
+    }
+    .count {
+      font-size: 120px;
+      font-weight: bold;
+      font-family: Consolas, monospace;
+      line-height: 1.2;
+      color: #ffffff;
+      text-shadow: 0 0 24px rgba(79, 199, 255, .6);
+      transition: transform .1s;
+    }
+    .count.bump { transform: scale(1.12); }
+    .timer {
+      font-family: Consolas, monospace;
+      font-size: 18px;
+      color: #7fdbff;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+      min-height: 24px;
+    }
+    .btns { display: flex; gap: 16px; justify-content: center; margin-top: 16px; }
+    button {
+      padding: 16px 48px;
+      font-size: 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .add {
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(0, 114, 255, .4);
+    }
+    .add:hover { transform: translateY(-2px); }
+    .reset {
+      background: transparent;
+      color: #7fdbff;
+      border: 1px solid rgba(79, 199, 255, .5);
+    }
+    .reset:hover { background: rgba(79, 199, 255, .1); }
+    .history {
+      background: transparent;
+      color: #5f7a99;
+      border: 1px solid rgba(95, 122, 153, .4);
+      font-size: 15px;
+      padding: 16px 24px;
+    }
+    .history:hover { color: #7fdbff; border-color: rgba(79, 199, 255, .5); }
+
+    /* ===== 记录面板（默认隐藏） ===== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .7);
+      display: none;               /* 点击"查看记录"时改成 flex */
+      align-items: center;
+      justify-content: center;
+    }
+    .overlay.open { display: flex; }
+    .records {
+      background: #0e1524;
+      border: 1px solid rgba(79, 199, 255, .3);
+      border-radius: 16px;
+      padding: 28px 32px;
+      width: 320px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    .records h2 { margin: 0 0 4px; font-size: 18px; color: #7fdbff; }
+    .records .sub { color: #5f7a99; font-size: 13px; margin-bottom: 12px; }
+    .records ul { list-style: none; padding: 0; margin: 0; font-family: Consolas, monospace; }
+    .records li {
+      padding: 8px 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+      color: #cfe3ff;
+      font-size: 14px;
+    }
+    .records li:last-child { border-bottom: none; }
+    .records .close {
+      margin-top: 16px;
+      width: 100%;
+      padding: 10px;
+      background: rgba(79, 199, 255, .15);
+      color: #7fdbff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .records .empty { color: #5f7a99; text-align: center; padding: 16px 0; }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>打卡计数</h1>
+    <div class="timer" id="timer"></div>
+    <div class="count" id="count">0</div>
+    <div class="btns">
+      <button class="add" onclick="add()">+1</button>
+      <button class="reset" onclick="reset()">重置</button>
+      <button class="history" onclick="showRecords()">查看记录</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="hideRecords(event)">
+    <div class="records">
+      <h2>打卡记录</h2>
+      <div class="sub" id="recordsSub"></div>
+      <ul id="recordsList"></ul>
+      <button class="close" onclick="hideRecords()">关闭</button>
+    </div>
+  </div>
+
+  <script>
+    // localStorage：浏览器自带的迷你数据库，刷新/关闭页面数据也不丢
+    const KEY = "counter-state";
+    const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+
+    let count = saved.count || 0;
+    // 记录"开始计时那一刻"的时间戳（毫秒）；null 表示还没开始计时
+    let startAt = saved.startAt || null;
+    // 每次打卡的时间戳列表，如 [1725600000000, ...]
+    let records = saved.records || [];
+
+    const countEl = document.getElementById("count");
+    const timerEl = document.getElementById("timer");
+
+    function save() {
+      localStorage.setItem(KEY, JSON.stringify({ count, startAt, records }));
+    }
+
+    function render() {
+      countEl.textContent = count;
+      countEl.classList.add("bump");
+      setTimeout(() => countEl.classList.remove("bump"), 120);
+    }
+
+    // 把毫秒排版成 mm:ss（超过 1 小时则 h:mm:ss）
+    function format(ms) {
+      const s = Math.floor(ms / 1000);
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const sec = s % 60;
+      const pad = n => String(n).padStart(2, "0");
+      return h > 0 ? `${h}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
+    }
+
+    function tick() {
+      if (startAt !== null) {
+        timerEl.textContent = "⏱ " + format(Date.now() - startAt);
+      }
+    }
+
+    function add() {
+      count += 1;
+      // 计数第一次变为 1 时，开始计时
+      if (count === 1) startAt = Date.now();
+      records.push(Date.now());   // 记下这一次打卡的时间
+      save();
+      render();
+    }
+
+    function reset() {
+      count = 0;
+      startAt = null;   // 计时也一并归零
+      records = [];     // 打卡记录一并清空
+      timerEl.textContent = "";
+      save();
+      render();
+      hideRecords();
+    }
+
+    // ===== 记录面板 =====
+    function showRecords() {
+      const list = document.getElementById("recordsList");
+      list.innerHTML = "";
+      if (records.length === 0) {
+        list.innerHTML = '<div class="empty">还没有打卡记录</div>';
+      } else {
+        // 倒序：最新的在最上面
+        records.slice().reverse().forEach((ts, i) => {
+          const li = document.createElement("li");
+          const d = new Date(ts);
+          li.textContent = `第 ${records.length - i} 次 · ${d.toLocaleString("zh-CN")}`;
+          list.appendChild(li);
+        });
+      }
+      document.getElementById("recordsSub").textContent =
+        `共 ${records.length} 次打卡`;
+      document.getElementById("overlay").classList.add("open");
+    }
+
+    function hideRecords(e) {
+      // 点了遮罩空白处也关闭（点到面板本身则不关）
+      if (e && e.target !== e.currentTarget) return;
+      document.getElementById("overlay").classList.remove("open");
+    }
+
+    render();
+    tick();
+    setInterval(tick, 1000);   // 每秒刷新一次计时显示
+  </script>
+</body>
+</html>

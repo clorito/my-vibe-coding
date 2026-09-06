@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于我 · 学习经历</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- 时间轴是这个页面特有的样式，放在本页，不污染公共文件 -->
+  <style>
+    .timeline {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 20px 8% 70px;
+      position: relative;
+    }
+    .item {
+      position: relative;
+      padding: 0 0 32px 28px;
+    }
+    /* 左侧竖线：画在时间轴容器上 */
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 8px;
+      bottom: 40px;
+      width: 2px;
+      background: rgba(var(--theme-rgb), .25);
+    }
+    /* 每个节点的小圆点 */
+    .item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 5px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--theme);
+    }
+    .item .date {
+      color: var(--theme);
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+    .item h3 { margin: 6px 0 6px; font-size: 17px; }
+    .item p { color: var(--muted); font-size: 14px; line-height: 1.7; margin: 0; }
+
+    .back-home {
+      text-align: center;
+      padding-bottom: 60px;
+    }
+    .back-home a {
+      color: var(--theme);
+      text-decoration: none;
+      border: 1px solid rgba(var(--theme-rgb), .4);
+      border-radius: 20px;
+      padding: 8px 28px;
+      font-size: 14px;
+      transition: background .2s;
+    }
+    .back-home a:hover { background: rgba(var(--theme-rgb), .1); }
+  </style>
+</head>
+<body>
+  <nav>
+    <span class="logo">DF·主页</span>
+    <span class="links">
+      <a href="index.html">首页</a>
+      <a href="about.html">关于</a>
+      <a href="works.html">作品</a>
+      <a href="notes.html">学习笔记</a>
+    </span>
+  </nav>
+
+  <section class="hero">
+    <h1>我的学习经历</h1>
+    <p>从一句"帮我做个网页"开始，一步步走向能做出完整产品。</p>
+  </section>
+
+  <section class="timeline">
+    <div class="item">
+      <div class="date">DAY 1</div>
+      <h3>第一次 Vibe Coding</h3>
+      <p>用一句话让 AI 生成了 hello.html，第一次看到自己"指挥"出来的网页在浏览器里跑起来。</p>
+    </div>
+    <div class="item">
+      <div class="date">DAY 2</div>
+      <h3>打卡计数器</h3>
+      <p>做出带计时、历史记录和本地存储的计数网页，学会了 localStorage 和"存明细不存汇总"。</p>
+    </div>
+    <div class="item">
+      <div class="date">WEEK 1</div>
+      <h3>个人主页三件套</h3>
+      <p>学会提示词五要素、flex 布局、CSS 变量，把样式抽成公共 style.css，完成首页和关于页。</p>
+    </div>
+    <div class="item">
+      <div class="date">NEXT</div>
+      <h3>目标：第一个完整应用</h3>
+      <p>接下来学习 Git 和前后端，做出待办清单应用并部署上线。</p>
+    </div>
+  </section>
+
+  <div class="back-home">
+    <a href="index.html">← 返回首页</a>
+  </div>
+
+  <footer>© <span id="year">2026</span> 用 Vibe Coding 制作 · Powered by GLM Coding Plan</footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

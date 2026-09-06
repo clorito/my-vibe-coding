@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>作品 · 未来项目</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- 本页特有样式：把公共的 4 列卡片覆盖成 2×2 大卡片 -->
+  <style>
+    .cards { max-width: 900px; margin: 0 auto; }
+    .card {
+      flex: 1 1 40%;      /* 覆盖公共的 23%：一行放两张，形成 2×2 */
+      padding: 32px 28px;
+    }
+    .card .status {
+      display: inline-block;
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px solid rgba(var(--theme-rgb), .4);
+      border-radius: 12px;
+      padding: 2px 10px;
+      margin-bottom: 12px;
+    }
+    .card p em { color: var(--theme); font-style: normal; }
+  </style>
+</head>
+<body>
+  <nav>
+    <span class="logo">DF·主页</span>
+    <span class="links">
+      <a href="index.html">首页</a>
+      <a href="about.html">关于</a>
+      <a href="works.html">作品</a>
+      <a href="notes.html">学习笔记</a>
+    </span>
+  </nav>
+
+  <section class="hero">
+    <h1>未来想做的项目</h1>
+    <p>这些是我在学习路上给自己立的目标。等它们一个个从"构想"变成"上线"，就会搬进这里。</p>
+  </section>
+
+  <section class="cards">
+    <div class="card">
+      <span class="status">⏳ 构想中</span>
+      <h3>智能记账本</h3>
+      <p>记下每一笔支出，自动分类统计，月底生成消费报告。目标用户是<em>和我一样不知道钱花哪了的人</em>。</p>
+    </div>
+    <div class="card">
+      <span class="status">⏳ 构想中</span>
+      <h3>在线相册</h3>
+      <p>把扫街拍的照片按主题整理展示，支持标签筛选，做成<em>能直接分享给朋友链接</em>的网页相册。</p>
+    </div>
+    <div class="card">
+      <span class="status">⏳ 构想中</span>
+      <h3>喂猫提醒器</h3>
+      <p>记录每次喂食时间，超过间隔就提醒。如果家里猫会说话，它一定是<em>这个产品的第一个用户</em>。</p>
+    </div>
+    <div class="card">
+      <span class="status">⏳ 构想中</span>
+      <h3>打字小游戏</h3>
+      <p>一个练习打字速度的小游戏，带成绩排行。顺便验证一下<em>用 AI 做游戏到底有多快</em>。</p>
+    </div>
+  </section>
+
+  <footer>© <span id="year">2026</span> 用 Vibe Coding 制作 · Powered by GLM Coding Plan</footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

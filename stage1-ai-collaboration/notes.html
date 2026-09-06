@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学习笔记</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- 本页特有样式：笔记条目列表 -->
+  <style>
+    .notes {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 10px 8% 70px;
+    }
+    .note {
+      background: var(--panel);
+      border: 1px solid rgba(var(--theme-rgb), .12);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+    .note h3 { margin: 0 0 10px; font-size: 17px; }
+    .note h3 .no {
+      color: var(--theme);
+      font-family: Consolas, monospace;
+      margin-right: 8px;
+    }
+    .note ul { margin: 8px 0 0; padding-left: 20px; }
+    .note li { color: var(--muted); font-size: 14px; line-height: 1.9; }
+    .note .quote {
+      background: rgba(var(--theme-rgb), .08);
+      border-left: 3px solid var(--theme);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.8;
+    }
+    .note .quote b { color: var(--theme); }
+  </style>
+</head>
+<body>
+  <nav>
+    <span class="logo">DF·主页</span>
+    <span class="links">
+      <a href="index.html">首页</a>
+      <a href="about.html">关于</a>
+      <a href="works.html">作品</a>
+      <a href="notes.html">学习笔记</a>
+    </span>
+  </nav>
+
+  <section class="hero">
+    <h1>学习笔记</h1>
+    <p>Vibe Coding 学习路上攒下的套路和心得，持续更新。</p>
+  </section>
+
+  <section class="notes">
+    <div class="note">
+      <h3><span class="no">01</span>好提示词五要素</h3>
+      <ul>
+        <li>① 做什么（文件/页面）② 有哪些内容 ③ 长什么样（风格）④ 技术限制（单文件/复用公共 CSS）⑤ 给谁用</li>
+        <li>要素越全，一次到位率越高，省 Coding Plan 额度</li>
+      </ul>
+      <div class="quote">
+        模板：<b>做一个 ___（页面），包含 ___（内容），风格 ___（深色/浅色/参考某页），限制 ___（单文件/复用 style.css），给 ___ 用。</b>
+      </div>
+    </div>
+
+    <div class="note">
+      <h3><span class="no">02</span>精准反馈：描述差异，不说"感觉不对"</h3>
+      <ul>
+        <li>说清楚"现象是什么、我预期是什么、请改哪里、其他部分不动"</li>
+        <li>一次只提一个修改，改完立刻刷新验收，再提下一个</li>
+      </ul>
+      <div class="quote">
+        模板：<b>功能对，但是 ___（现象）和我预期 ___ 不一样，请修改 ___，保持其他部分不动。</b>
+      </div>
+    </div>
+
+    <div class="note">
+      <h3><span class="no">03</span>先出计划，再动手</h3>
+      <ul>
+        <li>需求稍复杂时，让 AI 先给实现计划，确认后再写代码</li>
+        <li>好处：能看懂思路、及时纠正方向、避免大返工</li>
+      </ul>
+      <div class="quote">
+        模板：<b>请先给我一个实现计划，我确认后再写代码。</b>
+      </div>
+    </div>
+
+    <div class="note">
+      <h3><span class="no">04</span>CSS 变量：一处改，全站变</h3>
+      <ul>
+        <li>主题色放 :root 的变量里（--theme 实色 + --theme-rgb 半透明用），引用它的地方才会跟着变</li>
+        <li>写死的颜色不会跟随主题——发现漏网之鱼就统一改成 rgba(var(--theme-rgb), …)</li>
+      </ul>
+    </div>
+
+    <div class="note">
+      <h3><span class="no">05</span>存明细，不存汇总</h3>
+      <ul>
+        <li>汇总（总数）可以从明细（每次记录）算出来，反过来不行</li>
+        <li>案例：打卡计数器只存了 count，想加"查看记录"功能时历史已无法找回</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>© <span id="year">2026</span> 用 Vibe Coding 制作 · Powered by GLM Coding Plan</footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

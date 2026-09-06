@@ -1,0 +1,125 @@
+/* ===== 公共样式：所有页面共�?=====
+   换主题色只改 :root 这一处，全站生效 */
+
+:root {
+  --theme: #b490ff;
+  --theme-rgb: 180, 144, 255;   /* 主题色的 RGB 数值，供半透明色引�?*/
+  --bg: #0d1220;
+  --panel: #151d30;
+  --text: #dbe6f5;
+  --muted: #8fa3bf;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ===== 顶部导航 ===== */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 8%;
+  background: rgba(13, 18, 32, .55);   /* 半透明底，让模糊透出�?*/
+  backdrop-filter: blur(12px);          /* 毛玻璃：把身后内容糊�?*/
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(var(--theme-rgb), .15);
+  position: sticky;      /* 滚动时导航固定在顶部 */
+  top: 0;
+}
+nav .logo {
+  font-weight: bold;
+  color: var(--theme);
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+nav .links a {
+  margin-left: 28px;
+  text-decoration: none;
+  color: var(--muted);
+  transition: color .2s;
+}
+nav .links a:hover { color: var(--theme); }
+
+/* ===== 页面大标题区 ===== */
+.hero {
+  text-align: center;
+  padding: 80px 8% 50px;
+}
+.hero .avatar {
+  width: 88px;
+  height: 88px;
+  line-height: 88px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: var(--panel);
+  border: 2px solid var(--theme);
+  font-size: 40px;
+}
+.hero h1 { font-size: 30px; margin: 0 0 14px; }
+.hero p {
+  color: var(--muted);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+.hero .tag {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 4px 16px;
+  border: 1px solid rgba(var(--theme-rgb), .4);
+  border-radius: 20px;
+  color: var(--theme);
+  font-size: 13px;
+}
+
+/* ===== 卡片 ===== */
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 20px 8% 70px;
+}
+.card {
+  flex: 1 1 23%;          /* 四列：想变回三列改成 30% */
+  background: var(--panel);
+  border: 1px solid rgba(var(--theme-rgb), .12);
+  border-radius: 14px;
+  padding: 28px 24px;
+  transition: transform .2s, border-color .2s;
+}
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(var(--theme-rgb), .45);
+}
+.card h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+/* 标题前的小圆点：::before 表示"�?h3 内容的前�?插入一个装�?*/
+.card h3::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--theme);
+  margin-right: 8px;
+  vertical-align: middle;
+}
+.card p { color: var(--muted); font-size: 14px; line-height: 1.7; margin: 0; }
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 24px;
+  border-top: 1px solid rgba(var(--theme-rgb), .1);
+}
+footer a { color: var(--theme); text-decoration: none; }
+footer a:hover { text-decoration: underline; }

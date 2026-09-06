@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的个人主页</title>
+  <!-- 公共样式抽到了 style.css，多个页面共用一份 -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav>
+    <span class="logo">DF·主页</span>
+    <span class="links">
+      <a href="index.html">首页</a>
+      <a href="about.html">关于</a>
+      <a href="works.html">作品</a>
+      <a href="notes.html">学习笔记</a>
+    </span>
+  </nav>
+
+  <section class="hero">
+    <div class="avatar">👋</div>
+    <h1>你好，我是一名 Vibe Coding 学习者</h1>
+    <p>
+      我正在从零开始学习用 AI 辅助编程，这个主页就是我和 AI 一起完成的作品之一。
+      之后这里会记录我的学习笔记、做出来的小项目，以及一路踩过的坑。
+    </p>
+    <span class="tag">🚀 目标：6 周后做出自己的第一个上线产品</span>
+  </section>
+
+  <section class="cards">
+    <div class="card">
+      <h3>Vibe Coding</h3>
+      <p>目前在学 AI 协作编程，已经做出打卡计数器和个人主页，下一个目标是待办应用。</p>
+    </div>
+    <div class="card">
+      <h3>音乐</h3>
+      <p>通勤路上的伴奏，写代码时的背景音。想做一个小工具管理自己的歌单。</p>
+    </div>
+    <div class="card">
+      <h3>摄影</h3>
+      <p>周末出门扫街拍点照片，希望学会部署一个自己的在线相册。</p>
+    </div>
+    <div class="card">
+      <h3>游戏</h3>
+      <p>偶尔放松打两把，比起输赢更欣赏游戏的设计。想用代码做一个自己的小游戏。</p>
+    </div>
+  </section>
+
+  <footer>© <span id="year">2026</span> 用 Vibe Coding 制作 · Powered by GLM Coding Plan</footer>
+
+  <script>
+    // 页脚年份自动更新：跨年夜不用手动改
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
