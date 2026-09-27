@@ -1,18 +1,62 @@
-// ===== 待办清单 Pro：全部逻辑 =====
-// 模式：任何操作都是 改数据 → save() → render()
+// ===== 待办清单 Pro：全部逻辑（后端 API 版）=====
+// 模式不变：改数据 → 落库（现在是调服务器 API）→ render()
+// 区别：数据不再存浏览器 localStorage，而是存在服务器的 todos.json 里
 
-const KEY = "todos";
+const API = "/api/todos";
 let filter = "all";
 let editingId = null;   // 当前正在编辑哪一条（null = 没在编辑）
 
-// ---- 存取 ----
-function load() {
-  const list = JSON.parse(localStorage.getItem(KEY) || "[]");
+// ---- 存取（异步：网络请求需要等待，await 表示"等结果回来再往下走"）----
+async function load() {
+  const res = await fetch(API);            // 向服务器要数据
+  const list = await res.json();           // 把响应解析成数组
   // 兼容旧数据：没有 priority 字段的按 4（中性）处理
   return list.map(t => ({ priority: 4, ...t }));
 }
-function save(todos) {
-  localStorage.setItem(KEY, JSON.stringify(todos));
+
+async function addTodo() {
+  const titleEl = document.getElementById("titleInput");
+  const title = titleEl.value.trim();
+  if (!title) return alert("请输入内容");
+  const due = document.getElementById("dueInput").value;
+  const priority = Number(document.getElementById("priInput").value);
+
+  await fetch(API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, due, done: false, priority })
+  });
+  titleEl.value = "";
+  document.getElementById("dueInput").value = todayStr();   // 添加完也归位为今天
+  render();
+}
+
+async function finishEdit(id, newTitle, newDue, newPriority) {
+  const title = newTitle.trim();
+  if (!title) return alert("标题不能为空");
+  await fetch(`${API}/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, due: newDue, priority: Number(newPriority) })
+  });
+  editingId = null;
+  render();
+}
+
+async function toggleDone(id) {
+  const todos = await load();
+  const item = todos.find(t => t.id === id);
+  await fetch(`${API}/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ done: !item.done })
+  });
+  render();
+}
+
+async function removeTodo(id) {
+  await fetch(`${API}/${id}`, { method: "DELETE" });
+  render();
 }
 
 // ---- 优先级配色：1 红 → 7 绿，色相 0°~120° 均分 ----
@@ -29,8 +73,8 @@ function todayStr() {
 }
 
 // ---- 渲染 ----
-function render() {
-  const todos = load();
+async function render() {
+  const todos = await load();
   const today = todayStr();
 
   const visible = todos.filter(t =>
@@ -125,21 +169,14 @@ function render() {
     checkbox.type = "checkbox";
     checkbox.checked = t.done;
     checkbox.style.accentColor = "#00c6ff";
-    checkbox.onchange = () => {
-      const all = load();
-      all.find(x => x.id === t.id).done = !t.done;
-      save(all); render();
-    };
+    checkbox.onchange = () => toggleDone(t.id);
     li.insertBefore(checkbox, li.firstChild);
 
     // 删除按钮（最后）
     const del = document.createElement("button");
     del.className = "op del";
     del.textContent = "🗑";
-    del.onclick = () => {
-      save(load().filter(x => x.id !== t.id));
-      render();
-    };
+    del.onclick = () => removeTodo(t.id);
     li.appendChild(del);
 
     list.appendChild(li);
@@ -147,36 +184,6 @@ function render() {
 
   document.getElementById("count").textContent =
     `未完成 ${todos.filter(t => !t.done).length} 项`;
-}
-
-// ---- 增 ----
-function addTodo() {
-  const titleEl = document.getElementById("titleInput");
-  const title = titleEl.value.trim();
-  if (!title) return alert("请输入内容");
-  const due = document.getElementById("dueInput").value;
-  const priority = Number(document.getElementById("priInput").value);
-
-  const todos = load();
-  todos.push({ id: Date.now(), title, due, done: false, priority });
-  save(todos);
-  titleEl.value = "";
-  document.getElementById("dueInput").value = todayStr();   // 添加完也归位为今天
-  render();
-}
-
-// ---- 改（编辑保存：标题、日期、优先级一起提交）----
-function finishEdit(id, newTitle, newDue, newPriority) {
-  const title = newTitle.trim();
-  if (!title) return alert("标题不能为空");
-  const todos = load();
-  const item = todos.find(t => t.id === id);
-  item.title = title;
-  item.due = newDue;
-  item.priority = Number(newPriority);
-  editingId = null;
-  save(todos);
-  render();
 }
 
 // ---- 筛选 ----

@@ -1,0 +1,5 @@
+# 依赖包：可用 npm install 随时重装，不进仓库
+node_modules/
+
+# 数据文件：本地开发数据不上云
+data/todos.json
